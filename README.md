@@ -1,2 +1,3 @@
 # miniature-doodle
-Cinema Tickets Reservation API
+
+Cinema Tickets Reservation Restful API
