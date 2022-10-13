@@ -1,3 +1,4 @@
+from sre_constants import SRE_INFO_LITERAL
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from .models import Guest, Movie, Reservation
@@ -5,15 +6,23 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import Guest, GuestSerializer, Movie, Reservation
 from rest_framework import status, filters
+from rest_framework.views import APIView
+# from tickets import serializer
+from django.http import Http404
+from tickets import serializers
+from rest_framework import generics, mixins
+
 # Create your views here.
 
-#1 without rest framework, and no model query, FBV
+# 1 without rest framework, and no model query, FBV
+
+
 def no_rest_no_model(request):
 
     guest = [
         {
             'id': 1,
-            "Name" : "Omar", 
+            "Name": "Omar",
             "mobile": 789456,
         },
         {
@@ -26,14 +35,12 @@ def no_rest_no_model(request):
     return JsonResponse(guest, safe=False)
 
 
-
-#2 model data default django without rest
+# 2 model data default django without rest
 def no_rest_from_model(request):
 
-
-    data =Guest.objects.all()
+    data = Guest.objects.all()
     response = {
-        'guests' : list(data.values('name', 'mobile'))
+        'guests': list(data.values('name', 'mobile'))
     }
 
     return JsonResponse(response)
@@ -48,9 +55,9 @@ def no_rest_from_model(request):
 # Delete, Destroy == DELETE
 
 
-# 3 function based views
+# 3 function based views FBV
 
-#3.1 GET POST
+# 3.1 GET POST
 @api_view(['GET', 'POST'])
 def FBV_List(request):
     # GET
@@ -66,7 +73,8 @@ def FBV_List(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-#3.1 GET PUT DELETE
+# 3.2 GET PUT DELETE
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def FBV_pk(request, pk):
@@ -74,13 +82,13 @@ def FBV_pk(request, pk):
         guest = Guest.objects.get(pk=pk)
     except Guest.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-        
+
     # GET
     if request.method == 'GET':
         # guests = Guest.objects.all()      No need to query the database
         serializer = GuestSerializer(guest)
         return Response(serializer.data)
-    
+
     # PUT
     elif request.method == 'PUT':
         serializer = GuestSerializer(guest, data=request.data)
@@ -88,10 +96,95 @@ def FBV_pk(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     # DELETE
     if request.method == 'DELETE':
         # guests = Guest.objects.all()
         # serializer = GuestSerializer(guests, many=True)
         guest.delete()
         return Response(statu=status.HTTP_204_NO_CONTENT)
+
+
+# CBV Class based views
+# 4.1 list and create == GET and POST
+class CBV_List(APIView):
+    def get(self, request):
+        guests = Guest.objects.all()
+        serializer = GuestSerializer(guests, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = GuestSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.data,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+# CBV Class based views
+# 4.2 GET PUT DELETE class based views == pk
+class CBV_pk(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Guest.objects.get(pk=pk)
+        except Guest.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        guest = self.get_object(pk)
+        serializer = GuestSerializer(guest)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        guest = self.get_object(pk)
+        serializer = GuestSerializer(guest, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        guest = self.get_object(pk) 
+        guest.delete()        
+        return Response(status= status.HTTP_204_NO_CONTENT)
+
+
+# DRY Dont Repeat Your Self .. Mixins
+#5 Mixins
+
+#5.1 Mixins  list
+class mixins_list(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializer
+
+    def get(self, request):
+        return self.list(request)
+
+
+    def post(self, request):
+        return self.create(request)
+
+    
+#5.2 mixins get put delete
+class mixins_pk(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializer
+   
+    def get(self, request, pk):
+        return self.retrieve(request)
+
+    def put(self, request, pk):
+        return self.update(request)
+
+    def delete(self, request, pk):
+        return self.destroy(request)
+
+
