@@ -7,8 +7,8 @@ from django.db import models
 
 class Movie(models.Model):
     hall = models.CharField(max_length=10)
-    movie = models.CharField(max_length=10)
-    date = models.DateField(max_length=10)
+    movie = models.CharField(max_length=30) # extending max_length to 30
+    # date = models.DateField(max_length=10) -- No need for the data column
 
 
 class Guest(models.Model):
