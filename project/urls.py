@@ -1,9 +1,10 @@
-
 from xml.etree.ElementInclude import include
 from django.contrib import admin
 from django.urls import path, include
 from tickets import views
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
+
 
 router = DefaultRouter()
 router.register('guests', views.viewsets_guest)
@@ -68,7 +69,8 @@ urlpatterns = [
     #10 rest auth url
     path('api-auth', include('rest_framework.urls')),
 
+    #11 token authentication
+    path('api-token-auth', obtain_auth_token)
 
-    
 ]
 
