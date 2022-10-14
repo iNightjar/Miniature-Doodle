@@ -74,8 +74,8 @@ urlpatterns = [
 
 
     #12 
-    #12.1 Retrieve all post for particular user
-    # path('post/generics/', views.Post_list.as_view()),
+    12.1 Retrieve all post for particular user
+    path('post/generics/', views.Post_list.as_view()),
 
     #12.2 Post pk generics for each post
     path('post/generics/<int:pk>/', views.Post_pk.as_view()),
