@@ -1,5 +1,9 @@
-## Miniature-Doodle
+<div align="center">
 
-```
-Cinema Tickets Reservation Restful API
-```
+## Miniature-Doodle
+<p><strong>Cinema Tickets Reservation Using Django Rest framework APIs</strong></p>
+</div>
+
+<br>
+
+
