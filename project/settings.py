@@ -43,13 +43,14 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':
-    ['rest_framework.authentication.TokenAuthentication'], # Using key token for user
+    # 'DEFAULT_AUTHENTICATION_CLASSES':
+    # ['rest_framework.authentication.TokenAuthentication'], # Using key token for user
     # 'DEFAULT_PERMISSION_CLASSES':
     # ['rest_framework.permissions.IsAuthenticated']
 }
 
 # AllowAny \\ IsAuthenticated \\ IsAdminUser \\ IsAuthenticatedReadOnly 
+# blog > post > post.author -- edit post ????
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
