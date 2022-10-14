@@ -266,11 +266,11 @@ def new_reservation(request):
 
 
 #10 Post author editor CBV
-#10.1 Generics ListCreateAPIView, GET POST
-# class Post_list(generics.ListCreateAPIView):
-#     permission_classes = [IsAuthorOrReadOnly]
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
+# 10.1 Generics ListCreateAPIView, GET POST
+class Post_list(generics.ListCreateAPIView):
+    permission_classes = [IsAuthorOrReadOnly]
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 #10.2 Generics RetrieveUpdateDestroyAPIView, GET PUT DELETE
 class Post_pk(generics.RetrieveUpdateDestroyAPIView):
