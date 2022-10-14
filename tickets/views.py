@@ -1,17 +1,17 @@
 from sre_constants import SRE_INFO_LITERAL
 from django.shortcuts import render
 from django.http.response import JsonResponse
-from .models import Guest, Movie, Reservation
+from .models import Guest, Movie, Reservation, Post
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import Guest, GuestSerializer, Movie, MovieSerializer, Reservation, ReservationSerializer
+from .serializers import Guest, GuestSerializer, Movie, MovieSerializer, PostSerializer, Reservation, ReservationSerializer
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import generics, mixins, viewsets
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from .permissions import IsAuthorOrReadOnly
 # Create your views here.
 
 # 1 without rest framework, and no model query, FBV
@@ -195,7 +195,7 @@ class generics_list(generics.ListCreateAPIView):
     serializer_class = GuestSerializer
     
     # BasicAuthentications and Permissions for generics only
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication]   # Using key token for user
     # permission_classes = [IsAuthenticated]
 
 #6.2 GET PUT DELETE
@@ -204,7 +204,7 @@ class generics_pk(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GuestSerializer
     
     # BasicAuthentications and Permissions for generics only
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication]   # Using key token for user
     # permission_classes = [IsAuthenticated]
 
 
@@ -263,3 +263,17 @@ def new_reservation(request):
 
     # POST Request to create reservation in Reservation db Table
     return Response(status=status.HTTP_201_CREATED)
+
+
+#10 Post author editor CBV
+#10.1 Generics ListCreateAPIView, GET POST
+# class Post_list(generics.ListCreateAPIView):
+#     permission_classes = [IsAuthorOrReadOnly]
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+
+#10.2 Generics RetrieveUpdateDestroyAPIView, GET PUT DELETE
+class Post_pk(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthorOrReadOnly]
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
