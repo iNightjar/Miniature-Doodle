@@ -60,6 +60,15 @@ urlpatterns = [
     #8 Movie Search using FBV to allow more customizations
     path('fbv/findmovie/', views.find_movie),
     
+
     #9 Movie New Reservations for Guests, FBV
-    path('fbv/newreservation/', views.new_reservation)
+    path('fbv/newreservation/', views.new_reservation),
+
+
+    #10 rest auth url
+    path('api-auth', include('rest_framework.urls')),
+
+
+    
 ]
+
