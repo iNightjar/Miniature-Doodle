@@ -234,4 +234,24 @@ def find_movie(request):
     serializer = MovieSerializer(movies, many=True)
     return Response(serializer.data)
 
+
 #9 Create New Reservation
+@api_view(['POST'])
+def new_reservation(request):
+    movie = Movie.objects.get(
+        hall=request.data['hall'],
+        movie=request.data['movie'],
+    )
+    # in case of new guests who wanna see or book a movie
+    guest = Guest()
+    guest.name = request.data['name']
+    guest.mobile = request.data['mobile']
+    guest.save()  # save the instance to database
+
+    reservation = Reservation()
+    reservation.guest = guest
+    reservation.movie = movie
+    reservation.save()
+
+    # POST Request to create reservation in Reservation db Table
+    return Response(status=status.HTTP_201_CREATED)
