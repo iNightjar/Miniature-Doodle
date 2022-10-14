@@ -1,4 +1,6 @@
+from tkinter import CASCADE
 from django.db import models
+from django.contrib.auth.models import User
 
 # Token model to generate token key for every guest(user) gets created
 from django.db.models.signals import post_save
@@ -27,6 +29,12 @@ class Reservation(models.Model):
         Movie, related_name='reservation', on_delete=models.CASCADE)
 
 
+
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50)
+    body = models.TextField()
+    
 
 
 # autogenerate tokens for newusers
