@@ -224,8 +224,14 @@ class viewsets_reservation(viewsets.ModelViewSet):
     # filter_backends = [filters.SearchFilter] 
     # search_fields = ['reservation']
 
-#8 Find Movie with FBV
- 
+#8 Find Movie with FBV to allow more customizations
+@api_view(['GET'])
+def find_movie(request):
+    movies = Movie.objects.filter(
+        hall = request.data['hall'],
+        movie = request.data['movie'],
+    )
+    serializer = MovieSerializer(movies, many=True)
+    return Response(serializer.data)
 
- 
 #9 Create New Reservation
