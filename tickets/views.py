@@ -7,10 +7,10 @@ from rest_framework.response import Response
 from .serializers import Guest, GuestSerializer, Movie, MovieSerializer, Reservation, ReservationSerializer
 from rest_framework import status, filters
 from rest_framework.views import APIView
-# from tickets import serializer
 from django.http import Http404
-from tickets import serializers
 from rest_framework import generics, mixins, viewsets
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -193,11 +193,17 @@ class mixins_pk(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Destr
 class generics_list(generics.ListCreateAPIView):
     queryset = Guest.objects.all()
     serializer_class = GuestSerializer
+    # BasicAuthentications and Permissions for generics only
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 #6.2 GET PUT DELETE
 class generics_pk(generics.RetrieveUpdateDestroyAPIView):
     queryset = Guest.objects.all()
     serializer_class = GuestSerializer
+    # BasicAuthentications and Permissions for generics only
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 
