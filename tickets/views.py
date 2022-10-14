@@ -4,13 +4,13 @@ from django.http.response import JsonResponse
 from .models import Guest, Movie, Reservation
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import Guest, GuestSerializer, Movie, Reservation
+from .serializers import Guest, GuestSerializer, Movie, MovieSerializer, Reservation, ReservationSerializer
 from rest_framework import status, filters
 from rest_framework.views import APIView
 # from tickets import serializer
 from django.http import Http404
 from tickets import serializers
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, viewsets
 
 # Create your views here.
 
@@ -202,3 +202,30 @@ class generics_pk(generics.RetrieveUpdateDestroyAPIView):
 
 
 #7 View Sets
+class viewsets_guest(viewsets.ModelViewSet):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializer
+
+# creating viewsets for other models too
+
+class viewsets_movie(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+    # filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter] 
+    search_fields = ['movie']
+
+class viewsets_reservation(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+    ## setting fliters to search for reservations
+    # filter_backends = [filters.SearchFilter] 
+    # search_fields = ['reservation']
+
+#8 Find Movie with FBV
+ 
+
+ 
+#9 Create New Reservation
