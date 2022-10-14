@@ -56,5 +56,8 @@ urlpatterns = [
     #7 viewsets, guests, movies and reservations 
     path('rest/viewsets/', include(router.urls)),
 
+
+    #8 Movie Search using FBV to allow more customizations
+    path('fbv/findmovie/', views.find_movie),
     
 ]
